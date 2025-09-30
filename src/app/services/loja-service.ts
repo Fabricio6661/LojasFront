@@ -1,24 +1,25 @@
 import { Injectable, inject } from '@angular/core';
-import { ProdutoModel } from '../models/produtoModel';
+import { LojaModel } from '../models/lojaModel';
 import { Observable, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProdutoService {
+export class LojaService {
 
+    private lojas: LojaModel[] = [];
     private http = inject(HttpClient)
-    private baseApi = 'http://localhost:8080/produtos'
-    private produtos: ProdutoModel[] = [];
+    private baseApi = 'http://localhost:8080/lojas'
+    
 
 
-    listar(): Observable<ProdutoModel[]> {
-      return this.http.get<ProdutoModel[]>(`${this.baseApi}/listar`).pipe(catchError(this.handle))
+    listar(): Observable<LojaModel[]> {
+      return this.http.get<LojaModel[]>(`${this.baseApi}/listar`).pipe(catchError(this.handle))
     }
 
-     adicionar(produto: ProdutoModel): Observable<ProdutoModel>{
-      return this.http.post<ProdutoModel>(`${this.baseApi}/salvar`, produto)
+    adicionar(produto: LojaModel): Observable<LojaModel>{
+      return this.http.post<LojaModel>(`${this.baseApi}/salvar`, produto)
       .pipe(catchError(this.handle));
      }
 
@@ -27,8 +28,8 @@ export class ProdutoService {
       
      }
 
-     editar(id: string, produto: ProdutoModel): Observable<ProdutoModel> {
-      return this.http.post<ProdutoModel>(`${this.baseApi}/editar/${id}`, produto).pipe(catchError(this.handle));
+    editar(id: string, produto: LojaModel): Observable<LojaModel> {
+      return this.http.post<LojaModel>(`${this.baseApi}/editar/${id}`, produto).pipe(catchError(this.handle));
      }
 
     private handle(err: HttpErrorResponse) {

@@ -1,26 +1,27 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ProdutoService } from '../../services/produto-service';
-import { ProdutoModel } from '../../models/produtoModel';
+import { LojaService } from '../../services/loja-service';
 import { FormsModule } from '@angular/forms';
+import { LojaModel } from '../../models/lojaModel';
 
 @Component({
-  selector: 'app-produto-component',
-  standalone: true,
+  selector: 'app-loja-component',
   imports: [FormsModule],
-  templateUrl: './produto-component.html',
-  styleUrls: ['./produto-component.css']
+  standalone: true,
+  templateUrl: './loja-component.html',
+  styleUrls: ['./loja-component.css']
 })
-export class ProdutoComponent implements OnInit {
+export class LojaComponent implements OnInit {
 
-  private service = inject(ProdutoService);
+  private service = inject(LojaService);
 
-  produtos: ProdutoModel[]=[];
+
+  lojas: LojaModel[]=[];
   novoNome = '';
-  novoPreco = '';
-  novoDescricao = '';
+  novoEndereco = '';
+  novoCnpj = '';
   erro = '';
   sucesso = '';
-  editarItem : ProdutoModel | null = null;
+  editarItem : LojaModel | null = null;
 
   loading = false;
 
@@ -34,7 +35,7 @@ export class ProdutoComponent implements OnInit {
       //Faz a inscrição para reagir ao resultado do Observable
       .subscribe({
         next: item => {
-          this.produtos = item;
+          this.lojas = item;
           this.loading = false;
         },
         error: e => {
@@ -46,41 +47,39 @@ export class ProdutoComponent implements OnInit {
 
   adicionar(){
     this.erro='';
-    const precoNum = Number(this.novoPreco);
     if(!this.novoNome.trim()) {
       this.erro = 'Informe o nome'
       return;
     }
-    if(!this.novoDescricao.trim()) {
-      this.erro = 'Informe a descrição'
+    if(!this.novoEndereco.trim()) {
+      this.erro = 'Informe o endereço'
       return;
     }
-    if(Number.isNaN(precoNum) || precoNum <= 0) {
-      this.erro = 'Informe  um preço inválido';
+    if(!this.novoCnpj.trim()) {
+      this.erro = 'Informe o CNPJ'
       return;
     }
-
-    const payload : ProdutoModel={
+    const payload : LojaModel={
       id :'',
       nome : this.novoNome,
-      descricao : this.novoDescricao,
-      preco : precoNum
+      endereco : this.novoEndereco,
+      cnpj : this.novoCnpj
     }
 
     this.loading = true;
     this.service.adicionar(payload).subscribe({
       next: (p) => {
-        this.sucesso = `Produto ${p.nome} salvo com sucesso`;
+        this.sucesso = `Loja ${p.nome} salvo com sucesso`;
         this.loading = false;
         this.novoNome = '';
-        this.novoDescricao = '';
-        this.novoPreco = '';
+        this.novoCnpj = '';
+        this.novoEndereco = '';
         this.carregar();
 
         setTimeout(() => this.sucesso = '', 3000);
       },
         error: (e) => {
-          this.erro = e.message || 'Falha ao salva o produto';
+          this.erro = e.message || 'Falha ao salvar Loja';
           this.loading = false;
         }
       })
@@ -90,7 +89,7 @@ export class ProdutoComponent implements OnInit {
   remover(id: string){
     this.service.remover(id).subscribe({
       next: (msg: string) =>{
-        this.sucesso = msg || "Produto removido com sucesso";
+        this.sucesso = msg || "Loja removido com sucesso";
         this.carregar();
         setTimeout(() => this.sucesso = '', 3000);
       },
@@ -109,7 +108,7 @@ export class ProdutoComponent implements OnInit {
       next: result => {
         if(result){
           this.carregar();
-          this.sucesso = 'Produto atualizado com sucesso';
+          this.sucesso = 'Loja atualizado com sucesso';
           setTimeout(() => this.sucesso = '', 3000);
         }
       },
@@ -118,5 +117,5 @@ export class ProdutoComponent implements OnInit {
       }
     });
   }
-
 }
+

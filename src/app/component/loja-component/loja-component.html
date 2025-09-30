@@ -1,0 +1,68 @@
+<h2 class="mb-3">Lojas</h2>
+
+@if (loading) {<div class="alert alert-info">Carregando</div>}
+@if (erro) {<div class="alert alert-danger">{{erro}}</div>}
+
+<div class="row g-2 align-items-center mb-3">
+  <div class="col-sm-6 col-md-3"> 
+    <input class="form-control"
+            [(ngModel)]="novoNome"
+            placeholder="Nome">
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <input class="form-control"
+            [(ngModel)]="novoEndereco"
+            placeholder="Endereço">
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <input class="form-control"
+            [(ngModel)]="novoCnpj"
+            placeholder="CNPJ">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary" (click)="adicionar()">Adicionar</button>
+  </div>
+</div>
+
+<ul class="list-group mb-3">
+  @for (l of lojas; track l.id) {
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span>{{l.id}} - {{l.nome}} - {{l.endereco}} - {{l.cnpj}}</span>
+      <button class="btn btn-sm btn-outline-danger" (click)="remover(l.id)">Remover</button>
+      <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" (click)="editarItem = l">Editar</button>
+
+    </li>
+  }
+  @if (lojas.length === 0) {
+    <div class="alert alert-info">Nenhuma loja cadastrada</div>
+  }    
+</ul>
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      @if (editarItem) {
+        <div> 
+          <h4 class="modal-title"> Editar Loja</h4>
+          <button type="button" class="btn-close" data-bs-dimiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <input class="form-control mb-2" [(ngModel)] = "editarItem.nome" placeholder="Nome"/>
+        </div>
+
+        <div class="modal-body">
+          <input class="form-control mb-2" [(ngModel)] = "editarItem.endereco" placeholder="Endereço"/>
+        </div>
+
+        <div class="modal-body">
+          <input class="form-control mb-2" [(ngModel)] = "editarItem.cnpj" placeholder="CNPJ"/>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dimiss="modal" >Cancelar</button>
+          <button class="btn btn-primary" (click)="salvarEdicao()" data-bs-dismiss="modal" >Salvar</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

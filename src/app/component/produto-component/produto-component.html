@@ -1,1 +1,73 @@
-<p>produto-component works!</p>
+<h2 class="mb-3">Produtos</h2>
+
+@if (loading) {<div class="alert alert-info">Carregando</div>}
+@if (erro) {<div class="alert alert-danger">{{erro}}</div>}
+@if (sucesso) {<div class="alert alert-success">{{sucesso}}</div>}
+ 
+<div class="row g-2 align-items-center mb-3">
+  <div class="col-sm-6 col-md-4"> 
+    <input class="form-control"
+           [(ngModel)]="novoNome"
+           placeholder="Nome do Produto">
+  </div>
+  <div class="col-sm-6 col-md-4"> 
+    <input class="form-control"
+           [(ngModel)]="novoPreco"
+           placeholder="Preço do Produto">
+  </div>
+  <div class="col-sm-6 col-md-4"> 
+    <input class="form-control"
+           [(ngModel)]="novoDescricao"
+           placeholder="Descrição do Produto">
+  </div>
+   <div class="col-auto">
+     <button class="btn btn-primary" (click)="adicionar()">Adicionar</button> 
+  </div>
+</div>
+
+<ul class="list-group mb-3">
+  @for (p of produtos; track p.id) {
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <span>{{p.nome}} - {{'R$ ' + p.preco.toFixed(2)}} - {{p.descricao}} </span>
+
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn btn-danger" (click)="remover(p.id)">Remover</button>
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" (click)="editarItem = p">Editar</button>
+      </div>
+      
+    </li>
+  }
+  @if (produtos.length === 0) {
+    <div class="alert alert-info">Nenhum produto cadastrado</div>
+  }    
+</ul>
+<!-- Modal em Bootstrap -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      @if (editarItem) {
+        <div> 
+          <h4 class="modal-title"> Editar Produto</h4>
+          <button type="button" class="btn-close" data-bs-dimiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <input class="form-control mb-2" [(ngModel)] = "editarItem.nome" placeholder="Nome"/>
+        </div>
+
+        <div class="modal-body">
+          <input class="form-control mb-2" [(ngModel)] = "editarItem.preco" type="number" placeholder="Preço"/>
+        </div>
+
+        <div class="modal-body">
+          <input class="form-control mb-2" [(ngModel)] = "editarItem.descricao" placeholder="Descrição"/>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dimiss="modal" >Cancelar</button>
+          <button class="btn btn-primary" (click)="salvarEdicao()" data-bs-dismiss="modal" >Salvar</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
