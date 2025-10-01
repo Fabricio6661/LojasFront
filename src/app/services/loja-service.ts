@@ -11,6 +11,7 @@ export class LojaService {
     private lojas: LojaModel[] = [];
     private http = inject(HttpClient)
     private baseApi = 'http://localhost:8080/lojas'
+  
     
 
 

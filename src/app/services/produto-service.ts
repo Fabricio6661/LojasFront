@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ProdutoModel } from '../models/produtoModel';
 import { Observable, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { LojaService } from './loja-service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class ProdutoService {
     private http = inject(HttpClient)
     private baseApi = 'http://localhost:8080/produtos'
     private produtos: ProdutoModel[] = [];
+    
 
 
     listar(): Observable<ProdutoModel[]> {

@@ -2,30 +2,38 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ProdutoService } from '../../services/produto-service';
 import { ProdutoModel } from '../../models/produtoModel';
 import { FormsModule } from '@angular/forms';
+import { LojaModel } from '../../models/lojaModel';
+import { CommonModule } from '@angular/common';
+import { LojaService } from '../../services/loja-service';
 
 @Component({
   selector: 'app-produto-component',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './produto-component.html',
   styleUrls: ['./produto-component.css']
 })
 export class ProdutoComponent implements OnInit {
 
   private service = inject(ProdutoService);
+  private LojaService = inject(LojaService)
 
+  lojas: LojaModel[]=[];
   produtos: ProdutoModel[]=[];
   novoNome = '';
   novoPreco = '';
   novoDescricao = '';
+  novaLojaId = '';
   erro = '';
   sucesso = '';
   editarItem : ProdutoModel | null = null;
+  
 
   loading = false;
 
   ngOnInit(){
     this.carregar();
+    this.carregarLojas();
   }
 
   carregar(){
@@ -59,12 +67,17 @@ export class ProdutoComponent implements OnInit {
       this.erro = 'Informe  um preço inválido';
       return;
     }
+    if(!this.novaLojaId) {
+      this.erro = 'Informe uma Loja';
+      return;
+    }
 
     const payload : ProdutoModel={
       id :'',
       nome : this.novoNome,
       descricao : this.novoDescricao,
-      preco : precoNum
+      preco : precoNum,
+      lojaId : this.novaLojaId,
     }
 
     this.loading = true;
@@ -75,6 +88,7 @@ export class ProdutoComponent implements OnInit {
         this.novoNome = '';
         this.novoDescricao = '';
         this.novoPreco = '';
+        this.novaLojaId = '';
         this.carregar();
 
         setTimeout(() => this.sucesso = '', 3000);
@@ -116,6 +130,15 @@ export class ProdutoComponent implements OnInit {
       error: e => {
         this.erro = e.message || 'Falha ao editar';
       }
+    });
+  }
+
+  carregarLojas() {
+    this.LojaService.listar().subscribe({
+      next: item => {
+        this.lojas = item;
+      },
+      error : e => this.erro = e.message
     });
   }
 
